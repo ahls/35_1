@@ -19,10 +19,10 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.post('/', async (req, res, next) => {
-  const result = await db.query('INSERT INTO invoices (comp_code, amt) \
-                                VALUES ($1, $2) \
+  const result = await db.query('INSERT INTO invoices (comp_code, amt, paid) \
+                                VALUES ($1, $2, $3) \
                                 RETURNING id, comp_code, amt, paid, add_date, paid_date',
-                                [req.body.comp_code, req.body.amt]);
+                                [req.body.comp_code, req.body.amt, req.body.paid]);
   res.status(201).json({invoice: result.rows[0]});
 });
 
@@ -36,10 +36,10 @@ router.put('/:id', async (req, res, next) => {
 });
 
 router.delete('/:id', async (req, res, next) => {
-  const result = await db.query('DELETE FROM invoices WHERE id=$1', [req.params.id]);
+  const result = await db.query('DELETE FROM invoices WHERE id=$1 RETURNING id', [req.params.id]);
   if (result.rowCount == 0) 
     return res.status(404).json({error: 'Not Found'});
-  res.json({status: 'deleted'});
+  res.json({msg: 'deleted'});
 });
 
 module.exports = router;

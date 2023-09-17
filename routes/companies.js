@@ -32,10 +32,10 @@ router.put('/:code', async (req, res, next) => {
   });
 router.delete('/:code',async (req,res,next)=>
 {
-    const result = await db.query('DELETE FROM companies WHERE code=$1', [req.params.code]);
+    const result = await db.query('DELETE FROM companies WHERE code=$1 RETURNING code', [req.params.code]);
     if (result.rows.length == 0) 
         return res.status(404).json({error: 'Not Found'});
-    res.json({status: 'deleted'});
+    res.json({msg: 'deleted'});
 })
 
 module.exports=router;
